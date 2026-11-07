@@ -168,6 +168,7 @@ const page = `<!doctype html>
 <meta property="og:description" content="${description}">
 <meta property="og:url" content="https://gioguarin.github.io/fifty-hours/">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="anim/motion.css">
 <link rel="stylesheet" href="anim/responsive.css">

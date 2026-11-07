@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Fifty hours">
+  <rect width="32" height="32" rx="7" fill="#a13a14"/>
+  <line x1="6" y1="21.5" x2="26" y2="21.5" stroke="#fbf9f4" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+  <path d="M10 13 L22 19" stroke="#fbf9f4" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="10" cy="13" r="3.1" fill="#fbf9f4"/>
+  <circle cx="22" cy="19" r="3.1" fill="#fbf9f4"/>
+</svg>
