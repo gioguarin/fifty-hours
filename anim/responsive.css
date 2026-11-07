@@ -1,0 +1,95 @@
+/* ==========================================================================
+   Integration layer (lead) — loaded AFTER style.css and anim/motion.css.
+   Two jobs:
+     1. Re-point the motifs at the page's link ink. The theme reserves the
+        rust accent for corrections/retractions, so diagrams must not use it.
+     2. Give the wide diagrams a legible presentation on narrow screens,
+        where a 720-unit viewBox would otherwise scale 14px text down to ~7px.
+   ========================================================================== */
+
+/* 1. Palette alignment */
+.motif-slot {
+  --accent: var(--link, #1c4e80);
+}
+
+/* 1b. The two verifier cards keep fixed pale fills in both themes, so the
+   text on them must stay dark rather than inherit the theme's ink. These
+   rules need to outrank `.motif-text`/`.motif-label`, which set `fill`. */
+.motif-slot .motif-on-light {
+  fill: #2c2a25;
+}
+
+.motif-slot .motif-verdict-bad {
+  fill: #b3261e;
+  font-size: 12px;
+}
+
+.motif-slot .motif-verdict-good {
+  fill: #2e7d32;
+  font-size: 12px;
+}
+
+/* 2. Figure frame */
+.motif-figure {
+  margin: 2.25rem 0;
+  padding: 0;
+}
+
+.motif-figure .motif-slot {
+  margin: 0;
+}
+
+.motif-hint {
+  margin: 0.45rem 0 0;
+  font-family: var(--sans, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted, #5b564c);
+}
+
+.motif-hint::before {
+  content: "\2192\00a0\00a0";
+}
+
+/* Desktop: everything fits, so the hint is noise. */
+@media (min-width: 761px) {
+  .motif-hint { display: none; }
+}
+
+/* 4. The theme gives the sticky mobile tab strip a 96%-opaque background,
+   which is translucent enough that the article ghosts through it while
+   scrolling. Make it solid. */
+@media (max-width: 980px) {
+  .sidebar {
+    background: var(--bg, #fbf9f4);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* 3. Narrow screens: keep the diagram at a readable size and let it scroll
+   horizontally instead of shrinking the type into illegibility. */
+@media (max-width: 760px) {
+  .motif-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong, #cfc7b5) transparent;
+  }
+
+  .motif-scroll .motif-slot {
+    width: 640px;
+    max-width: none;
+    height: auto;
+    aspect-ratio: auto;
+  }
+
+  .motif-scroll .motif-slot svg {
+    width: 640px;
+    height: auto;
+  }
+}

@@ -1,0 +1,42 @@
+.motif-slot {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--sans, sans-serif);
+  color: var(--ink, #1c1c1e);
+  margin: 2rem 0;
+  border-radius: 8px;
+  background: var(--surface, #fff);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid var(--rule, #e2ddd6);
+}
+
+.motif-slot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.motif-slot[data-motif="timeline"] { aspect-ratio: 720/180; }
+.motif-slot[data-motif="pipeline"] { aspect-ratio: 720/160; }
+.motif-slot[data-motif="calibration"] { aspect-ratio: 720/260; }
+.motif-slot[data-motif="willingness-skill"] { aspect-ratio: 720/300; }
+.motif-slot[data-motif="exploit-lab"] { aspect-ratio: 720/300; }
+.motif-slot[data-motif="verifier"] { aspect-ratio: 720/220; }
+
+.motif-label {
+  font-size: 12px;
+  fill: var(--muted, #5f6368);
+  font-family: var(--sans, sans-serif);
+}
+
+.motif-text {
+  font-size: 14px;
+  fill: var(--ink, #1c1c1e);
+  font-family: var(--sans, sans-serif);
+}
+
+.motif-accent { fill: var(--accent, #1a4f8a); }
+.motif-accent-stroke { stroke: var(--accent, #1a4f8a); }
+.motif-rule { stroke: var(--rule, #e2ddd6); }
+.motif-bg { fill: var(--surface, #fff); }

@@ -64,6 +64,37 @@ html = html.replace(/<h([23])>([\s\S]+?)<\/h\1>/g, (_m, level, inner) => {
   return '<h' + level + ' id="' + id + '">' + inner + "</h" + level + ">";
 });
 
+// --- 3b. Mount points for the animated figures (anim/motion.js fills these).
+const MOTIFS = {
+  timeline: "timeline",
+  "the-head-to-head-benchmark": "pipeline",
+  "overconfidence-and-how-it-was-contained": "calibration",
+  "willingness-vs-capability": "willingness-skill",
+  "the-exploit-lab": "exploit-lab",
+  "a-wrong-verifier-is-worse-than-none": "verifier",
+};
+
+const mounted = new Set();
+html = html.replace(/<(h[23]) id="([^"]+)">([\s\S]*?)<\/\1>/g, (match, _tag, id) => {
+  const motif = MOTIFS[id];
+  if (!motif) return match;
+  mounted.add(id);
+  return (
+    match +
+    '\n<figure class="motif-figure"><div class="motif-scroll">' +
+    '<div class="motif-slot" data-motif="' +
+    motif +
+    '"></div></div>' +
+    '<figcaption class="motif-hint">Scroll to explore</figcaption></figure>'
+  );
+});
+
+const unmounted = Object.keys(MOTIFS).filter((id) => !mounted.has(id));
+if (unmounted.length) {
+  console.error("Motif anchor(s) not found in document: " + unmounted.join(", "));
+  process.exit(1);
+}
+
 // --- 4. Tables need a scroll container on narrow screens.
 html = html
   .replace(/<table>/g, '<div class="table-wrap"><table>')
@@ -77,6 +108,41 @@ if (broken.length) {
   console.error("Broken TOC anchors: " + broken.join(", "));
   process.exit(1);
 }
+
+// --- 5b. Hero stat band and eyebrow. Numbers copied verbatim from the
+// document's own "Headline numbers" table and executive summary.
+const HERO = `<dl class="stat-band" aria-label="Headline results">
+  <div class="stat">
+    <dt>Refusals, uncensored 120B vs its clean base</dt>
+    <dd class="fig">0<small>/14</small> <small>vs</small> 6<small>/14</small></dd>
+    <dd class="note">Both judges agreed 100% of the time</dd>
+  </div>
+  <div class="stat">
+    <dt>Fabricated impacket scripts accepted as real</dt>
+    <dd class="fig">10<small>/10</small></dd>
+    <dd class="note">Fabricated CVE ids: 0/10 first run, 1/10 rebuilt</dd>
+  </div>
+  <div class="stat">
+    <dt>Working exploits, parallel container trials</dt>
+    <dd class="fig">10<small>/10</small></dd>
+    <dd class="note">Each trial in its own container</dd>
+  </div>
+  <div class="stat is-retracted">
+    <dt>Capability gain of the uncensored build</dt>
+    <dd class="fig"><del>+0.62</del> +0.12</dd>
+    <dd class="note">95% CI &minus;0.58 to +0.83, includes zero</dd>
+  </div>
+</dl>`;
+
+if (!html.includes("<h1>") || !html.includes("<p><strong>Contents</strong></p>")) {
+  console.error("Hero anchors missing from rendered HTML (h1 / Contents paragraph).");
+  process.exit(1);
+}
+html = html.replace("<h1>", '<p class="eyebrow">Research write-up</p>\n<h1>');
+html = html.replace(
+  "<p><strong>Contents</strong></p>",
+  HERO + "\n<p><strong>Contents</strong></p>"
+);
 
 // --- 6. Assemble.
 const words = md.split(/\s+/).filter(Boolean).length;
@@ -103,8 +169,11 @@ const page = `<!doctype html>
 <meta property="og:url" content="https://gioguarin.github.io/fifty-hours/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="anim/motion.css">
+<link rel="stylesheet" href="anim/responsive.css">
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="layout">
   <nav class="sidebar" aria-label="On this page">
     <p class="sidebar-label">On this page</p>
@@ -112,7 +181,7 @@ const page = `<!doctype html>
 ${nav}
     </ol>
   </nav>
-  <main class="content">
+  <main class="content" id="main">
 ${html}
   </main>
 </div>
@@ -121,6 +190,30 @@ ${html}
   <span>Supporting artifacts live in a private repository</span>
   <span>Published with GitHub Pages</span>
 </footer>
+<script src="anim/motion.js" defer></script>
+<script>
+/* Active-section marker for browsers without :target-current (Safari/Firefox). */
+(function () {
+  if (window.CSS && CSS.supports && CSS.supports("selector(:target-current)")) return;
+  var links = [].slice.call(document.querySelectorAll(".sidebar a"));
+  var map = {};
+  links.forEach(function (a) {
+    var id = a.getAttribute("href");
+    if (id && id.charAt(0) === "#") map[id.slice(1)] = a;
+  });
+  if (!("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      links.forEach(function (a) { a.removeAttribute("aria-current"); });
+      if (map[e.target.id]) map[e.target.id].setAttribute("aria-current", "true");
+    });
+  }, { rootMargin: "0px 0px -75% 0px" });
+  document.querySelectorAll("main h2[id]").forEach(function (h) {
+    if (map[h.id]) io.observe(h);
+  });
+})();
+</script>
 </body>
 </html>
 `;

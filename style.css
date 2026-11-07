@@ -1,288 +1,818 @@
+/* ==========================================================================
+   Fifty hours with uncensored local models — theme.css
+   Drop-in replacement for style.css. System fonts only, no requests.
+   Direction: a well-set journal essay. Warm paper, one ink-blue for
+   navigation, one "red-pen" rust reserved for corrections and retractions.
+   See SPEC.md for the token rationale and the optional markup additions.
+   ========================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+
 :root {
-  --bg: #fbfaf8;
-  --surface: #ffffff;
-  --ink: #1c1c1e;
-  --muted: #5f6368;
-  --rule: #e2ddd6;
-  --accent: #1a4f8a;
-  --accent-soft: #eaf1f9;
-  --code-bg: #f3f1ed;
-  --serif: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light dark;
+
+  /* colour — light ("paper") */
+  --bg:          #fbf9f4;
+  --surface:     #ffffff;
+  --ink:         #1b1a17;   /* 16.6:1 on bg */
+  --ink-soft:    #2c2a25;   /* body text */
+  --muted:       #5b564c;   /* 6.9:1 on bg  */
+  --rule:        #e4ded1;
+  --rule-strong: #cfc7b5;
+  --link:        #1c4e80;   /* 8.0:1 on bg  */
+  --link-soft:   #e8eff7;
+  --accent:      #a13a14;   /* the red pen: corrections, retractions — 6.6:1 */
+  --accent-bg:   #f8ece3;
+  --accent-rule: #d9a58b;
+  --code-bg:     #f0ece2;
+  --code-ink:    #3a2f22;
+  --pre-bg:      #1d1e22;
+  --pre-ink:     #e8e6e1;
+  --pre-rule:    #34363c;
+  --pre-label:   #9ea3ad;
+  --shadow-edge: rgba(27, 26, 23, 0.14);
+  --focus:       #1c6fd1;
+
+  /* type */
+  --serif: Charter, "Bitstream Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* scale: base 18px, ~1.25 ratio for display steps */
+  --t-xs:   0.75rem;     /* 13.5px labels            */
+  --t-sm:   0.875rem;    /* 15.75px UI, tables       */
+  --t-base: 1.125rem;    /* 18px body                */
+  --t-lead: 1.25rem;     /* standfirst, lede         */
+  --t-h3:   1.0625rem;
+  --t-h2:   1.75rem;
+  --t-h1:   2.75rem;
+
+  /* spacing — 4px grid */
+  --s1: 0.25rem;  --s2: 0.5rem;   --s3: 0.75rem;  --s4: 1rem;
+  --s5: 1.5rem;   --s6: 2rem;     --s7: 3rem;     --s8: 4.5rem;
+
+  /* radii: deliberately small — paper, not app */
+  --r-sm: 3px;
+  --r:    6px;
+
+  --measure: 41rem;      /* ~70 characters at 18px Charter */
+  --nav-w:   14.5rem;
+  --gap:     3.5rem;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #171612;
+    --surface:     #1e1d19;
+    --ink:         #f1eee6;   /* 15.4:1 */
+    --ink-soft:    #dedad0;   /* 12.7:1 */
+    --muted:       #aaa598;   /* 7.3:1  */
+    --rule:        #302e27;
+    --rule-strong: #46433a;
+    --link:        #8fbdf0;   /* 9.4:1  */
+    --link-soft:   #1f2a38;
+    --accent:      #f09a70;   /* 8.4:1  */
+    --accent-bg:   #271d17;
+    --accent-rule: #7a4529;
+    --code-bg:     #26241e;
+    --code-ink:    #e8d9c4;
+    --pre-bg:      #0f0f11;
+    --pre-ink:     #e8e6e1;
+    --pre-rule:    #2c2e33;
+    --pre-label:   #8e939d;
+    --shadow-edge: rgba(0, 0, 0, 0.55);
+    --focus:       #7db4f5;
+  }
+}
+
+/* ---------- 2. Base ---------- */
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
   background: var(--bg);
-  color: var(--ink);
+  color: var(--ink-soft);
   font-family: var(--serif);
-  font-size: 18px;
-  line-height: 1.68;
+  font-size: var(--t-base);
+  line-height: 1.66;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  hanging-punctuation: first;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+::selection { background: var(--link-soft); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* optional skip link (see SPEC) */
+.skip-link {
+  position: absolute;
+  left: var(--s4);
+  top: -4rem;
+  z-index: 100;
+  padding: var(--s2) var(--s4);
+  background: var(--ink);
+  color: var(--bg);
+  font: 600 var(--t-sm) var(--sans);
+  text-decoration: none;
+  border-radius: var(--r-sm);
+}
+.skip-link:focus { top: var(--s3); }
+
+/* Reading progress — CSS only, Chromium/Safari 26+. No-op elsewhere. */
+@supports (animation-timeline: scroll()) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 3px;
+    z-index: 60;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    animation: reading-progress linear both;
+    animation-timeline: scroll(root block);
+    pointer-events: none;
+  }
+  @keyframes reading-progress { to { transform: scaleX(1); } }
+}
+
+/* ---------- 3. Page layout ---------- */
+
 .layout {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 96px;
+  padding: 0 var(--s5) var(--s8);
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  gap: 56px;
+  grid-template-columns: var(--nav-w) minmax(0, 1fr);
+  gap: var(--gap);
   align-items: start;
 }
 
-/* ---------- sidebar ---------- */
+.content {
+  min-width: 0;
+  max-width: var(--measure);
+  padding-top: 3.5rem;
+  counter-reset: sec;
+}
+
+/* ---------- 4. Sidebar ---------- */
 
 .sidebar {
   position: sticky;
   top: 0;
   max-height: 100vh;
   overflow-y: auto;
-  padding: 52px 0 32px;
+  overscroll-behavior: contain;
+  padding: 3.5rem 0 var(--s6);
   font-family: var(--sans);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--t-sm);
+  line-height: 1.4;
 }
 
 .sidebar-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.09em;
+  margin: 0 0 var(--s4);
+  font-size: var(--t-xs);
+  font-weight: 650;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
-  margin: 0 0 14px;
 }
 
 .sidebar ol {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-left: 1px solid var(--rule);
+  border-left: 1px solid var(--rule-strong);
+  counter-reset: nav;
+  scroll-target-group: auto;           /* enables :target-current (Chromium) */
 }
 
-.sidebar li { margin: 0; }
+.sidebar li { margin: 0; counter-increment: nav; }
 
 .sidebar a {
-  display: block;
-  padding: 6px 0 6px 14px;
+  display: grid;
+  grid-template-columns: 2.1em 1fr;
+  align-items: baseline;
+  padding: 0.42rem var(--s2) 0.42rem 0.85rem;
   margin-left: -1px;
   border-left: 2px solid transparent;
-  border-bottom: 0;
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sidebar a::before {
+  content: counter(nav, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  opacity: 0.85;
 }
 
 .sidebar a:hover {
-  color: var(--accent);
-  border-left-color: var(--accent);
+  color: var(--ink);
+  border-left-color: var(--rule-strong);
 }
 
-/* ---------- content ---------- */
+/* Active section: CSS-only where :target-current exists, else JS sets aria-current */
+.sidebar a[aria-current="true"] {
+  color: var(--ink);
+  font-weight: 650;
+  border-left-color: var(--accent);
+  background: linear-gradient(90deg, var(--accent-bg), transparent 85%);
+}
+@supports selector(:target-current) {
+  .sidebar a:target-current {
+    color: var(--ink);
+    font-weight: 650;
+    border-left-color: var(--accent);
+    background: linear-gradient(90deg, var(--accent-bg), transparent 85%);
+  }
+}
+.sidebar a[aria-current="true"]::before { color: var(--accent); opacity: 1; }
+@supports selector(:target-current) {
+  .sidebar a:target-current::before { color: var(--accent); opacity: 1; }
+}
 
-.content {
-  min-width: 0;
-  padding-top: 52px;
-  max-width: 720px;
+/* ---------- 5. Headings ---------- */
+
+h1, h2 {
+  font-family: var(--serif);
+  color: var(--ink);
+  text-wrap: balance;
 }
 
 h1 {
-  font-family: var(--sans);
-  font-size: 2.35rem;
-  line-height: 1.14;
-  letter-spacing: -0.021em;
+  margin: 0 0 var(--s4);
+  font-size: var(--t-h1);
+  line-height: 1.08;
   font-weight: 700;
-  margin: 0 0 18px;
+  letter-spacing: -0.022em;
 }
 
 h2 {
-  font-family: var(--sans);
-  font-size: 1.5rem;
-  line-height: 1.25;
-  letter-spacing: -0.012em;
-  font-weight: 650;
-  margin: 3.2rem 0 1rem;
-  padding-top: 1.4rem;
-  border-top: 1px solid var(--rule);
-  scroll-margin-top: 24px;
+  counter-increment: sec;
+  margin: var(--s8) 0 var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--rule-strong);
+  font-size: var(--t-h2);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  scroll-margin-top: var(--s5);
 }
 
-h3 {
-  font-family: var(--sans);
-  font-size: 1.08rem;
-  line-height: 1.35;
-  font-weight: 650;
-  margin: 2.1rem 0 0.6rem;
-  color: #2b2b30;
-  scroll-margin-top: 24px;
-}
-
-p { margin: 0 0 1.15em; }
-
-/* opening standfirst */
-.content > p:first-of-type em {
-  font-size: 1.06rem;
+/* Section number as an eyebrow above the title. Decorative: empty alt text. */
+h2::before {
+  content: counter(sec, decimal-leading-zero);
+  content: counter(sec, decimal-leading-zero) / "";
+  display: block;
+  margin-bottom: var(--s2);
+  font: 650 var(--t-xs) / 1 var(--mono);
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 
+.content > hr + h2 { margin-top: var(--s8); }
+.content > ol:first-of-type + hr + h2,
+.content > h1 ~ hr:first-of-type + h2 { margin-top: var(--s7); }
+
+h3 {
+  margin: var(--s6) 0 var(--s2);
+  font-family: var(--sans);
+  font-size: var(--t-h3);
+  line-height: 1.35;
+  font-weight: 650;
+  letter-spacing: -0.003em;
+  color: var(--ink);
+  scroll-margin-top: var(--s5);
+  text-wrap: balance;
+}
+
+/* ---------- 6. Prose ---------- */
+
+p { margin: 0 0 1.1em; text-wrap: pretty; }
+
+strong { font-weight: 700; color: var(--ink); }
+
 a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(26, 79, 138, 0.28);
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--link) 45%, transparent);
+  transition: text-decoration-color 0.15s ease;
 }
+a:hover { text-decoration-color: var(--link); text-decoration-thickness: 2px; }
 
-a:hover { border-bottom-color: var(--accent); }
+ul, ol { margin: 0 0 1.2em; padding-left: 1.4em; }
+li { margin: 0.4em 0; padding-left: 0.15em; }
+li::marker { color: var(--muted); }
+li > p { margin-bottom: 0.5em; }
 
-strong { font-weight: 650; }
+hr { border: 0; border-top: 1px solid var(--rule-strong); margin: var(--s7) 0; }
 
-hr {
-  border: 0;
-  border-top: 1px solid var(--rule);
-  margin: 2.6rem 0;
-}
-
-/* The document uses "---" before most h2s, and h2 already draws a rule.
-   Keeping both produced a doubled line. */
+/* The source puts "---" before most h2s and h2 already draws a rule. */
 .content > hr { display: none; }
 
-.content > hr + h2 { margin-top: 2.4rem; }
-
-ul, ol { margin: 0 0 1.15em; padding-left: 1.35em; }
-li { margin: 0.32em 0; }
-
-/* documented contents list */
-.content > ol:first-of-type {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  padding: 18px 22px 18px 40px;
-  font-family: var(--sans);
-  font-size: 0.93rem;
-  line-height: 1.75;
+blockquote {
+  margin: 0 0 1.3em;
+  padding: 0 0 0 var(--s4);
+  border-left: 3px solid var(--rule-strong);
+  color: var(--muted);
+  font-style: italic;
 }
 
-/* ---------- code ---------- */
+/* Marked renders a lone-tilde pair ("~20 ... ~47") as <del>. That is a
+   source/build quirk, not a deletion: never show it as struck-through. */
+del { text-decoration: none; }
+
+/* Standfirst: the italic dek under the h1 */
+.content > h1 + p {
+  max-width: 34rem;
+  margin-bottom: var(--s5);
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Executive summary lede */
+#executive-summary + p {
+  font-size: 1.1875rem;
+  color: var(--ink);
+}
+
+/* The one result that did not survive, in the executive summary.
+   Structural selector: 4th paragraph after the heading. Or add class="retraction". */
+#executive-summary + p + p + p + p,
+.retraction {
+  margin: var(--s5) 0;
+  padding: var(--s4) var(--s5);
+  background: var(--accent-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  color: var(--ink);
+}
+
+/* ---------- 7. Hero extras (optional markup — see hero.html) ---------- */
+
+.eyebrow {
+  margin: 0 0 var(--s3);
+  font: 650 var(--t-xs) / 1.2 var(--sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.stat-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: var(--s6) 0 var(--s6);
+  padding: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule-strong);
+  font-family: var(--sans);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--s4) var(--s4) var(--s4) 0;
+}
+.stat + .stat {
+  padding-left: var(--s4);
+  border-left: 1px solid var(--rule);
+}
+
+.stat dt {                       /* label, read first, shown second */
+  order: 2;
+  margin-top: var(--s2);
+  font-size: var(--t-xs);
+  line-height: 1.35;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.stat .fig {                     /* the number */
+  order: 1;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.85rem;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.stat .fig small {
+  font: 600 0.8rem / 1 var(--sans);
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.stat .fig del {                 /* superseded claim, struck on purpose */
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  color: var(--muted);
+  font-size: 0.62em;
+  font-weight: 600;
+  margin-right: 0.3em;
+}
+
+.stat .note {
+  order: 3;
+  margin: var(--s1) 0 0;
+  font-size: var(--t-xs);
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.stat.is-retracted dt::before {
+  content: "Retracted";
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.stat.is-retracted .fig { color: var(--accent); }
+
+/* ---------- 8. In-document contents ---------- */
+
+.content > p:has(+ ol + hr + h2#executive-summary) {
+  margin: 0 0 var(--s2);
+  font: 650 var(--t-xs) / 1 var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.content > p:has(+ ol + hr + h2#executive-summary) strong { font-weight: inherit; color: inherit; }
+
+.content > ol:first-of-type {
+  margin: 0;
+  padding: var(--s3) var(--s4) var(--s3) 2.6rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  font-family: var(--sans);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+}
+.content > ol:first-of-type li { margin: 0.28em 0; }
+.content > ol:first-of-type li::marker {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  color: var(--muted);
+}
+@media (min-width: 720px) {
+  .content > ol:first-of-type { columns: 2; column-gap: var(--s6); }
+  .content > ol:first-of-type li { break-inside: avoid; }
+}
+
+/* ---------- 9. Signature: "What we got wrong, and fixed" ---------- */
+
+#what-we-got-wrong-and-fixed {
+  border-top: 3px solid var(--accent);
+}
+#what-we-got-wrong-and-fixed::before {
+  color: var(--accent);
+}
+
+/* The one-line thesis reads as a pull-quote */
+#what-we-got-wrong-and-fixed + p {
+  margin: 0 0 var(--s5);
+  padding-left: var(--s4);
+  border-left: 3px solid var(--accent);
+  font-size: 1.4rem;
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* The ten errors become a ledger. Structural selector, or add class="errata". */
+#what-we-got-wrong-and-fixed + p + ol,
+ol.errata {
+  list-style: none;
+  counter-reset: err;
+  margin: 0 0 var(--s5);
+  padding: 0 var(--s5);
+  background: var(--accent-bg);
+  border-top: 1px solid var(--accent-rule);
+  border-bottom: 1px solid var(--accent-rule);
+  border-radius: var(--r);
+}
+
+#what-we-got-wrong-and-fixed + p + ol > li,
+ol.errata > li {
+  counter-increment: err;
+  position: relative;
+  margin: 0;
+  padding: var(--s4) 0 var(--s4) 3.1rem;
+  color: var(--ink-soft);
+  font-size: 1.04rem;
+  line-height: 1.58;
+}
+#what-we-got-wrong-and-fixed + p + ol > li + li,
+ol.errata > li + li {
+  border-top: 1px solid var(--accent-rule);
+}
+
+#what-we-got-wrong-and-fixed + p + ol > li::before,
+ol.errata > li::before {
+  content: counter(err, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: calc(var(--s4) + 0.2em);
+  font: 700 0.8rem / 1.4 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+/* ---------- 10. Code ---------- */
 
 code {
   font-family: var(--mono);
-  font-size: 0.845em;
+  font-size: 0.84em;
+  font-weight: 450;
+  color: var(--code-ink);
   background: var(--code-bg);
-  border-radius: 4px;
-  padding: 0.14em 0.36em;
+  border-radius: var(--r-sm);
+  padding: 0.12em 0.35em;
   overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
 }
+a code { color: inherit; }
+h2 code, h3 code { font-size: 0.8em; }
 
 pre {
-  background: #1f2126;
-  color: #e6e6e8;
-  border-radius: 10px;
-  padding: 16px 18px;
+  position: relative;
+  margin: 0 0 var(--s5);
+  padding: var(--s4) var(--s5);
+  background: var(--pre-bg);
+  color: var(--pre-ink);
+  border: 1px solid var(--pre-rule);
+  border-radius: var(--r);
   overflow-x: auto;
-  font-size: 0.83rem;
-  line-height: 1.6;
-  margin: 0 0 1.3em;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  tab-size: 4;
+  -webkit-overflow-scrolling: touch;
 }
 
 pre code {
-  background: none;
+  display: block;
   padding: 0;
-  font-size: inherit;
+  background: none;
   color: inherit;
+  border-radius: 0;
+  font-size: inherit;
+  font-weight: 400;
+  overflow-wrap: normal;
 }
 
-/* ---------- tables ---------- */
+/* A quiet language tag when the generator emits class="language-xxx" */
+pre:has(> code[class*="language-"]) { padding-top: 2.4rem; }
+pre:has(> code.language-bash)::before { content: "bash"; }
+pre:has(> code.language-sh)::before   { content: "sh"; }
+pre:has(> code.language-python)::before { content: "python"; }
+pre:has(> code[class*="language-"])::before {
+  position: absolute;
+  top: 0.6rem;
+  left: var(--s5);
+  font: 650 0.68rem / 1 var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pre-label);
+}
+
+/* ---------- 11. Tables (booktabs: heavy rules top & bottom, hairlines between) ---------- */
 
 .table-wrap {
+  margin: var(--s4) 0 var(--s5);
   overflow-x: auto;
-  margin: 0 0 1.5em;
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  background: var(--surface);
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  -webkit-overflow-scrolling: touch;
+  /* scroll affordance: soft edge shadows appear only when content is clipped */
+  background:
+    linear-gradient(to right, var(--bg), var(--bg)) left center / 1.5rem 100% no-repeat local,
+    linear-gradient(to left,  var(--bg), var(--bg)) right center / 1.5rem 100% no-repeat local,
+    linear-gradient(to right, var(--shadow-edge), transparent) left center / 0.75rem 100% no-repeat scroll,
+    linear-gradient(to left,  var(--shadow-edge), transparent) right center / 0.75rem 100% no-repeat scroll;
 }
+.table-wrap:focus-visible { outline-offset: 2px; border-radius: 0; }
 
 table {
-  border-collapse: collapse;
   width: 100%;
+  border-collapse: collapse;
   font-family: var(--sans);
-  font-size: 0.865rem;
-  line-height: 1.5;
+  font-size: var(--t-sm);
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 thead th {
+  padding: 0.7rem 1rem 0.6rem;
   text-align: left;
+  font-size: var(--t-xs);
   font-weight: 650;
-  background: #f7f5f1;
-  border-bottom: 1px solid var(--rule);
-  padding: 10px 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
   white-space: nowrap;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--rule-strong);
 }
 
 tbody td {
-  padding: 9px 14px;
-  border-bottom: 1px solid #efece7;
+  padding: 0.62rem 1rem;
   vertical-align: top;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule);
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody td:first-child { font-weight: 600; color: var(--ink); }
+tbody td strong { color: var(--ink); font-weight: 700; }
+tbody tr:hover td { background: color-mix(in srgb, var(--surface) 70%, transparent); }
+
+thead th:first-child, tbody td:first-child { padding-left: 0.25rem; }
+thead th:last-child,  tbody td:last-child  { padding-right: 0.25rem; }
+
+/* numeric columns: from markdown alignment (":---:") or an optional .num class */
+th[align="right"], td[align="right"], th.num, td.num { text-align: right; }
+th[align="center"], td[align="center"] { text-align: center; }
+
+td code, th code {
+  font-size: 0.86em;
+  background: transparent;
+  padding: 0;
+  color: var(--ink);
+  font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
-tbody tr:last-child td { border-bottom: 0; }
-tbody tr:hover { background: #faf8f4; }
-
-td code, th code { font-size: 0.9em; }
-
-/* ---------- footer ---------- */
+/* ---------- 12. Footer ---------- */
 
 .site-footer {
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 28px 24px 64px;
-  border-top: 1px solid var(--rule);
-  font-family: var(--sans);
-  font-size: 12.5px;
-  color: var(--muted);
+  padding: var(--s5) var(--s5) var(--s8) calc(var(--s5) + var(--nav-w) + var(--gap));
+  border-top: 1px solid var(--rule-strong);
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 20px;
+  gap: var(--s1) 0;
+  font-family: var(--sans);
+  font-size: var(--t-xs);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+.site-footer span + span::before {
+  content: "\00b7";
+  margin: 0 0.7em;
+  color: var(--rule-strong);
+}
+.site-footer a { color: inherit; }
+
+/* ---------- 13. Responsive ---------- */
+
+@media (max-width: 1100px) {
+  :root { --gap: 2.5rem; --nav-w: 13rem; }
 }
 
-.site-footer a { color: var(--muted); border-bottom-color: var(--rule); }
-.site-footer a:hover { color: var(--accent); }
-
-/* ---------- responsive ---------- */
-
 @media (max-width: 980px) {
-  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 20px 72px; }
+  :root { --t-base: 1.0625rem; --t-h1: 2.25rem; --t-h2: 1.55rem; }
+
+  /* block layout so the sidebar can stick for the whole article */
+  .layout { display: block; padding: 0 var(--s4) var(--s7); }
+
   .sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
+    z-index: 40;
     max-height: none;
-    padding: 32px 0 0;
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 20px;
+    overflow: visible;
+    margin: 0 calc(var(--s4) * -1);
+    padding: 0;
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    border-bottom: 1px solid var(--rule-strong);
   }
-  .sidebar ol { border-left: 0; display: flex; flex-wrap: wrap; gap: 4px; }
-  .sidebar a { padding: 4px 10px; border-left: 0; border-radius: 6px; background: var(--accent-soft); }
-  .content { padding-top: 32px; max-width: none; }
-  body { font-size: 17px; }
-  h1 { font-size: 1.95rem; }
+  .sidebar-label { display: none; }
+
+  /* a single scrolling row of section tabs instead of 12 wrapped chips */
+  .sidebar ol {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding: 0 var(--s4);
+    border-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar ol::-webkit-scrollbar { display: none; }
+  .sidebar li { flex: none; }
+  .sidebar a {
+    display: block;
+    margin: 0;
+    padding: 0.8rem 0.8rem 0.7rem;
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    background: none;
+  }
+  .sidebar a::before { margin-right: 0.45em; }
+  .sidebar a:hover { border-left-color: transparent; border-bottom-color: var(--rule-strong); }
+  .sidebar a[aria-current="true"] { border-bottom-color: var(--accent); background: none; }
+  @supports selector(:target-current) {
+    .sidebar a:target-current { border-bottom-color: var(--accent); background: none; }
+  }
+
+  .content { max-width: none; padding-top: var(--s6); }
+
+  h2 { scroll-margin-top: 4rem; margin-top: var(--s7); }
+  h3 { scroll-margin-top: 4rem; }
+
+  .site-footer { padding: var(--s5) var(--s4) var(--s7); }
+}
+
+@media (max-width: 720px) {
+  .stat-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat:nth-child(odd)  { padding-left: 0; border-left: 0; }
+  .stat:nth-child(n+3)  { border-top: 1px solid var(--rule); }
 }
 
 @media (max-width: 640px) {
-  body { font-size: 16.5px; }
-  h1 { font-size: 1.7rem; }
-  h2 { font-size: 1.3rem; }
-  .content > ol:first-of-type { padding-left: 34px; }
+  :root { --t-base: 1.03rem; --t-h1: 1.95rem; --t-h2: 1.4rem; }
+  .content > h1 + p { font-size: 1.1rem; }
+  #executive-summary + p { font-size: 1.08rem; }
+  #executive-summary + p + p + p + p, .retraction { padding: var(--s3) var(--s4); }
+  #what-we-got-wrong-and-fixed + p { font-size: 1.2rem; }
+  #what-we-got-wrong-and-fixed + p + ol, ol.errata { padding: 0 var(--s4); }
+  #what-we-got-wrong-and-fixed + p + ol > li, ol.errata > li { padding-left: 2.5rem; font-size: 1rem; }
+  .content > ol:first-of-type { padding-left: 2.3rem; }
+  pre { padding: var(--s3) var(--s4); font-size: 0.78rem; }
+  pre:has(> code[class*="language-"])::before { left: var(--s4); }
+  .stat .fig { font-size: 1.6rem; }
+  thead th { padding-left: 0.75rem; padding-right: 0.75rem; }
+  tbody td { padding: 0.55rem 0.75rem; }
+  tbody td:first-child, thead th:first-child { padding-left: 0.1rem; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; }
+}
+
+/* ---------- 14. Print ---------- */
+
+@page { margin: 18mm 16mm; }
+
 @media print {
-  .sidebar, .site-footer { display: none; }
-  .layout { display: block; padding: 0; max-width: none; }
+  :root {
+    --bg: #fff; --surface: #fff; --ink: #000; --ink-soft: #111; --muted: #444;
+    --rule: #ccc; --rule-strong: #999; --link: #000;
+    --accent: #7a2a0c; --accent-bg: #f4f4f4; --accent-rule: #aaa;
+    --code-bg: #f1f1f1; --code-ink: #000;
+    --pre-bg: #f4f4f4; --pre-ink: #111; --pre-rule: #bbb; --pre-label: #555;
+  }
+  body { font-size: 10.5pt; line-height: 1.5; background: #fff; }
+  body::before, .sidebar, .site-footer, .skip-link { display: none !important; }
+  .layout { display: block; max-width: none; padding: 0; }
   .content { max-width: none; padding-top: 0; }
-  body { font-size: 11pt; background: #fff; }
-  pre { background: #f4f4f4; color: #111; border: 1px solid #ddd; }
-  h2 { page-break-after: avoid; }
-  .table-wrap { border: 1px solid #ccc; }
+  h1 { font-size: 24pt; }
+  h2 { font-size: 16pt; margin-top: 20pt; break-after: avoid; }
+  h3 { break-after: avoid; }
+  a { text-decoration: none; color: #000; }
+  .content > ol:first-of-type { border-color: #999; }
+  pre, .table-wrap, .stat, .stat-band, tr, li { break-inside: avoid; }
+  pre { white-space: pre-wrap; overflow: visible; font-size: 8.5pt; }
+  .table-wrap { overflow: visible; background: none; }
+  table { font-size: 8.5pt; }
+  #executive-summary + p + p + p + p, .retraction { border: 1px solid #999; border-left-width: 3px; }
+  #what-we-got-wrong-and-fixed + p + ol, ol.errata { background: none; border: 1px solid #999; }
+  #what-we-got-wrong-and-fixed + p + ol > li, ol.errata > li { break-inside: avoid; }
+  #what-we-got-wrong-and-fixed { border-top-width: 2px; }
 }

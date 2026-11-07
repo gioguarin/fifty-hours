@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motif Demo</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="motion.css">
+<style>
+  body { padding: 40px; }
+  .slot-wrapper {
+    margin-bottom: 60px;
+    border: 1px dashed var(--rule);
+    padding: 20px;
+    background: var(--bg);
+  }
+  h2 { font-family: var(--sans); font-size: 16px; margin-top: 0; color: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111;
+      --surface: #222;
+      --ink: #eee;
+      --muted: #aaa;
+      --rule: #444;
+      --accent: #6aa84f;
+      --accent-soft: #2a3a2a;
+      --code-bg: #333;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="slot-wrapper"><h2>timeline</h2><div class="motif-slot" data-motif="timeline"></div></div>
+<div class="slot-wrapper"><h2>pipeline</h2><div class="motif-slot" data-motif="pipeline"></div></div>
+<div class="slot-wrapper"><h2>calibration</h2><div class="motif-slot" data-motif="calibration"></div></div>
+<div class="slot-wrapper"><h2>willingness-skill</h2><div class="motif-slot" data-motif="willingness-skill"></div></div>
+<div class="slot-wrapper"><h2>exploit-lab</h2><div class="motif-slot" data-motif="exploit-lab"></div></div>
+<div class="slot-wrapper"><h2>verifier</h2><div class="motif-slot" data-motif="verifier"></div></div>
+
+<script src="motion.js"></script>
+</body>
+</html>
