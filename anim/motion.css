@@ -40,3 +40,17 @@
 .motif-accent-stroke { stroke: var(--accent, #1a4f8a); }
 .motif-rule { stroke: var(--rule, #e2ddd6); }
 .motif-bg { fill: var(--surface, #fff); }
+
+/* Narrow layout (<= 760px): 340-unit viewBox, reflowed. Keep in sync with
+   the matchMedia query in motion.js. Type is set here so it stays legible. */
+@media (max-width: 760px) {
+  .motif-slot[data-motif="timeline"] { aspect-ratio: 340/336; }
+  .motif-slot[data-motif="pipeline"] { aspect-ratio: 340/352; }
+  .motif-slot[data-motif="calibration"] { aspect-ratio: 340/272; }
+  .motif-slot[data-motif="willingness-skill"] { aspect-ratio: 340/312; }
+  .motif-slot[data-motif="exploit-lab"] { aspect-ratio: 340/316; }
+  .motif-slot[data-motif="verifier"] { aspect-ratio: 340/396; }
+  .motif-narrow .motif-label { font-size: 13px; }
+  .motif-narrow .motif-text { font-size: 14.5px; }
+  .motif-narrow .m-mono { font-family: var(--mono, monospace); font-size: 13px; }
+}

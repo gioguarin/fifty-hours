@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let prefersReduced = rm.matches;
 
   function S(tag, attrs, children) {
     const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -18,7 +19,7 @@
   }
 
   const motifs = {
-    timeline: (container) => {
+    timeline: (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 180' });
       const g = S('g', { transform: 'translate(10, 90)' });
       svg.appendChild(g);
@@ -76,7 +77,7 @@
               e.circle.style.opacity = '1';
               e.textG.style.opacity = '1';
             } else {
-              setTimeout(() => {
+              cx.t(() => {
                 e.circle.style.transition = 'opacity 0.4s, fill 0.4s';
                 e.textG.style.transition = 'opacity 0.4s, transform 0.4s';
                 e.circle.style.opacity = '1';
@@ -94,7 +95,7 @@
       };
     },
 
-    pipeline: (container) => {
+    pipeline: (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 160' });
       
       const defs = S('defs');
@@ -205,7 +206,7 @@
       };
     },
 
-    calibration: (container) => {
+    calibration: (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 260' });
       
       const g = S('g', { transform: 'translate(140, 130)' });
@@ -281,23 +282,23 @@
             ciText.style.opacity = 1; ciNote.style.opacity = 1; zeroHighlight.style.opacity = 1;
             return;
           }
-          setTimeout(() => {
+          cx.t(() => {
             arrow.style.transition = 'opacity 0.4s';
             arrow.style.opacity = 1;
             
-            setTimeout(() => {
+            cx.t(() => {
               step2.style.transition = 'opacity 0.3s';
               step2.style.opacity = 1;
               errorBar.style.opacity = 1;
               
-              setTimeout(() => {
+              cx.t(() => {
                 errorBar.style.transition = 'y1 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), y2 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)';
                 errorBar.setAttribute('y1', barTop);
                 errorBar.setAttribute('y2', barBot);
                 capTop.style.transition = 'opacity 0.2s 0.6s'; capTop.style.opacity = 1;
                 capBot.style.transition = 'opacity 0.2s 0.6s'; capBot.style.opacity = 1;
                 
-                setTimeout(() => {
+                cx.t(() => {
                   ciText.style.transition = 'opacity 0.4s'; ciText.style.opacity = 1;
                   ciNote.style.transition = 'opacity 0.4s'; ciNote.style.opacity = 1;
                   zeroHighlight.style.transition = 'opacity 0.4s, r 0.4s'; zeroHighlight.style.opacity = 1;
@@ -320,7 +321,7 @@
       };
     },
 
-    'willingness-skill': (container) => {
+    'willingness-skill': (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 300' });
       
       const g = S('g', { transform: 'translate(90, 250)' });
@@ -387,9 +388,9 @@
             p1G.style.opacity = 1; p2G.style.opacity = 1; bracket.style.opacity = 1;
             return;
           }
-          setTimeout(() => { p1G.style.transition = 'opacity 0.4s'; p1G.style.opacity = 1; }, 200);
-          setTimeout(() => { p2G.style.transition = 'opacity 0.4s'; p2G.style.opacity = 1; }, 800);
-          setTimeout(() => { bracket.style.transition = 'opacity 0.5s'; bracket.style.opacity = 1; }, 1600);
+          cx.t(() => { p1G.style.transition = 'opacity 0.4s'; p1G.style.opacity = 1; }, 200);
+          cx.t(() => { p2G.style.transition = 'opacity 0.4s'; p2G.style.opacity = 1; }, 800);
+          cx.t(() => { bracket.style.transition = 'opacity 0.5s'; bracket.style.opacity = 1; }, 1600);
         },
         reset: () => {
           p1G.style.opacity = 0; p2G.style.opacity = 0; bracket.style.opacity = 0;
@@ -397,7 +398,7 @@
       };
     },
 
-    'exploit-lab': (container) => {
+    'exploit-lab': (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 300' });
       
       svg.appendChild(S('text', { x: 20, y: 30, class: 'motif-label', 'font-weight': 'bold' }, ['10 Isolated Containers (Parallel Trials)']));
@@ -452,7 +453,7 @@
             const speed = 1.5 + Math.random() * 2;
             const delay = Math.random() * 1000;
             
-            setTimeout(() => {
+            cx.t(() => {
               const loop = () => {
                 if (!running) return;
                 width += speed;
@@ -481,7 +482,7 @@
       };
     },
 
-    verifier: (container) => {
+    verifier: (container, cx) => {
       const svg = S('svg', { viewBox: '0 0 720 220' });
       
       const defs = S('defs');
@@ -552,9 +553,9 @@
             res.style.opacity = 1;
             return;
           }
-          setTimeout(() => { a1.style.transition = 'opacity 0.3s'; a1.style.opacity = 1; v1.style.transition = 'opacity 0.4s'; v1.style.opacity = 1; }, 400);
-          setTimeout(() => { a2.style.transition = 'opacity 0.3s'; a2.style.opacity = 1; v2.style.transition = 'opacity 0.4s'; v2.style.opacity = 1; }, 1400);
-          setTimeout(() => { res.style.transition = 'opacity 0.5s'; res.style.opacity = 1; }, 2400);
+          cx.t(() => { a1.style.transition = 'opacity 0.3s'; a1.style.opacity = 1; v1.style.transition = 'opacity 0.4s'; v1.style.opacity = 1; }, 400);
+          cx.t(() => { a2.style.transition = 'opacity 0.3s'; a2.style.opacity = 1; v2.style.transition = 'opacity 0.4s'; v2.style.opacity = 1; }, 1400);
+          cx.t(() => { res.style.transition = 'opacity 0.5s'; res.style.opacity = 1; }, 2400);
         },
         reset: () => {
           v1.style.opacity = 0; v2.style.opacity = 0;
@@ -565,30 +566,351 @@
     }
   };
 
-  const instances = [];
-  document.querySelectorAll('.motif-slot').forEach(slot => {
-    const name = slot.getAttribute('data-motif');
-    if (motifs[name]) {
-      const inst = motifs[name](slot);
-      instances.push({ el: slot, inst });
-    }
-  });
+  // ==========================================================================
+  // Narrow (<= 760px) variants. Same information, reflowed: 340-unit viewBox,
+  // vertical stacking, type set by CSS (.motif-narrow) so it stays >= ~11px.
+  // Colours come from classes (m-*), never fill attributes (CSS beats them).
+  // ==========================================================================
+  const NW = 340;
+  const svgN = (h) => S('svg', { viewBox: '0 0 ' + NW + ' ' + h, class: 'motif-narrow' });
+  const X = (p, x, y, s, c, a) => p.appendChild(S('text', { x, y, class: c, 'text-anchor': a }, [s]));
+  const R = (p, x, y, w, h, a) => p.appendChild(S('rect', Object.assign({ x, y, width: w, height: h, rx: 6, 'stroke-width': 2 }, a)));
+  const L = (p, x1, y1, x2, y2, a) => p.appendChild(S('line', Object.assign({ x1, y1, x2, y2, 'stroke-width': 2 }, a)));
+  const marker = (id, col) => S('marker', { id, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, [S('path', { d: 'M0 0L10 5 0 10z', fill: col })]);
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const match = instances.find(i => i.el === entry.target);
-      if (match) {
-        if (entry.isIntersecting) {
-          match.inst.play();
-        } else {
-          match.inst.reset();
+  // Staged opacity reveal: steps = [[delayMs, fadeSec, [elements]], ...]
+  function fader(cx, steps) {
+    const all = steps.flatMap(s => s[2]);
+    all.forEach(e => { e.style.opacity = 0; });
+    return {
+      play() {
+        steps.forEach(([d, t, es]) => {
+          const f = () => es.forEach(e => { if (!prefersReduced) e.style.transition = 'opacity ' + t + 's'; e.style.opacity = 1; });
+          if (prefersReduced) f(); else cx.t(f, d);
+        });
+      },
+      reset() { all.forEach(e => { e.style.transition = 'none'; e.style.opacity = 0; }); }
+    };
+  }
+
+  const narrow = {
+    // Vertical time axis; time on the left, event on the right. ~1.9s.
+    timeline: (c, cx) => {
+      const svg = svgN(336), AX = 84;
+      L(svg, AX, 34, AX, 322, { class: 'motif-rule' });
+      L(svg, AX, 124, AX, 308, { stroke: 'var(--accent)', 'stroke-width': 3, opacity: 0.5 });
+      const ev = [
+        [50, '21:00', 'Nov 4', 'Prequel', 0, '~26h Prequel', 20],
+        [124, '22:55', 'Nov 5', 'Session Begins', 1, '~24h Session', 96],
+        [170, '14:00', 'Nov 6', '120B Tests', 1],
+        [216, '20:00', 'Audit &', 'Corrections', 1],
+        [262, '23:00', 'Container Lab', '', 1],
+        [308, '00:10', 'Nov 7', '154 Rows', 1]
+      ];
+      const steps = ev.map((e, i) => {
+        const [cy, time, a, b, on, head, hy] = e, g = S('g');
+        if (head) X(g, 14, hy, head, 'motif-label m-b ' + (on ? 'm-acc' : 'm-mut'));
+        if (on) {
+          g.appendChild(S('circle', { cx: AX, cy, r: 7, fill: 'none', stroke: 'var(--surface)', 'stroke-width': 3 }));
+          g.appendChild(S('circle', { cx: AX, cy, r: 5, fill: 'var(--accent)' }));
+        } else g.appendChild(S('circle', { cx: AX, cy, r: 6, fill: 'var(--surface)', stroke: 'var(--muted)', 'stroke-width': 2 }));
+        X(g, AX - 14, cy + 5, time, 'motif-label m-b ' + (on ? 'm-acc' : 'm-mut'), 'end');
+        if (b) { X(g, AX + 16, cy - 3, a, 'motif-text'); X(g, AX + 16, cy + 14, b, 'motif-text'); }
+        else X(g, AX + 16, cy + 5, a, 'motif-text');
+        svg.appendChild(g);
+        return [i * 300, 0.4, [g]];
+      });
+      c.appendChild(svg);
+      return fader(cx, steps);
+    },
+
+    // Five stages stacked, counts inline, particles fall down the arrows. ~6s.
+    pipeline: (c, cx) => {
+      const svg = svgN(352), MX = NW / 2;
+      svg.appendChild(S('defs', {}, [marker('pipe-arrow', 'var(--muted)')]));
+      const bx = [['Tasks', '14 Tasks × 11 Models'], ['LM Studio', '154 Runs'], ['LLM Judge', 'OpenRouter · Sub-scores'], ['Code', 'Combine scores'], ['Report', '154 Judged Rows']];
+      const paths = [];
+      bx.forEach(([t, d], i) => {
+        const y = 14 + i * 64;
+        R(svg, 20, y, 300, 40, { fill: 'var(--surface)', stroke: i === 4 ? 'var(--accent)' : 'var(--rule)' });
+        X(svg, 36, y + 25, t, 'motif-text m-b');
+        X(svg, 304, y + 25, d, 'motif-text m-mut', 'end');
+        if (i < 4) {
+          L(svg, MX, y + 40, MX, y + 62, { stroke: 'var(--muted)', 'marker-end': 'url(#pipe-arrow)' });
+          paths.push({ y1: y + 40, y2: y + 54 });
         }
+      });
+      const pg = S('g'); svg.appendChild(pg);
+      const count = S('text', { x: MX, y: 338, class: 'motif-label m-acc m-b', 'text-anchor': 'middle', opacity: 0 });
+      svg.appendChild(count);
+      c.appendChild(svg);
+      let raf, running = false, ps = [], done = 0;
+      return {
+        play() {
+          if (prefersReduced) { count.textContent = 'Processed 154 rows'; count.style.opacity = 1; return; }
+          if (running) return;
+          running = true; done = 0; count.style.opacity = 1;
+          let last = 0;
+          const loop = (t) => {
+            if (!running) return;
+            if (t - last > 150 && done + ps.length < 38) {
+              last = t;
+              const el = S('circle', { cx: MX + Math.random() * 10 - 5, cy: paths[0].y1, r: 3, fill: 'var(--accent)' });
+              pg.appendChild(el); ps.push({ el, s: 0, y: paths[0].y1 });
+            }
+            for (let i = ps.length - 1; i >= 0; i--) {
+              const p = ps[i];
+              p.y += 2;
+              if (p.y >= paths[p.s].y2) {
+                if (++p.s >= paths.length) { p.el.remove(); ps.splice(i, 1); count.textContent = 'Processing: ' + Math.min(154, ++done * 4); continue; }
+                p.y = paths[p.s].y1;
+              }
+              p.el.setAttribute('cy', p.y);
+            }
+            if (done >= 38) { count.textContent = 'Processed 154 rows'; running = false; } else raf = requestAnimationFrame(loop);
+          };
+          raf = requestAnimationFrame(loop);
+        },
+        reset() {
+          running = false; cancelAnimationFrame(raf);
+          ps.forEach(p => p.el.remove()); ps = [];
+          count.style.opacity = 0; count.textContent = '';
+        }
+      };
+    },
+
+    // One vertical axis, two points; the annotation sits under the plot. ~2.3s.
+    calibration: (c, cx) => {
+      const svg = svgN(272), g = S('g', { transform: 'translate(62,118)' });
+      svg.appendChild(g);
+      L(g, 0, -90, 0, 90, { class: 'motif-rule' });
+      [-70, 70].forEach(y => L(g, -5, y, 5, y, { class: 'motif-rule' }));
+      X(g, -10, -66, '+1.0', 'motif-label', 'end'); X(g, -10, 74, '-1.0', 'motif-label', 'end'); X(g, -10, 4, '0', 'motif-label', 'end');
+      X(g, -54, -96, 'Δ Capability', 'motif-text m-mut');
+      L(g, -10, 0, 270, 0, { class: 'motif-rule', 'stroke-dasharray': '5 5' });
+      X(g, 8, 20, '0 = no difference', 'motif-label m-mut');
+      const y1 = -43.4, y2 = -8.4, top = -58.1, bot = 40.6, px = 214;
+      g.appendChild(S('circle', { cx: 76, cy: y1, r: 6, fill: 'var(--accent)' }));
+      X(g, 76, y1 - 12, '+0.62', 'motif-text m-ink', 'middle');
+      X(g, 76, y1 - 28, 'Single sample (N=1)', 'motif-label', 'middle');
+      const arrow = S('path', { d: 'M86 ' + y1 + 'L' + (px - 10) + ' ' + y2, stroke: 'var(--muted)', 'stroke-width': 2, 'stroke-dasharray': '4 4', fill: 'none', opacity: 0 });
+      g.appendChild(arrow);
+      const s2 = S('g', { opacity: 0 }); g.appendChild(s2);
+      const bar = L(s2, px, y2, px, y2, { stroke: 'var(--accent)', 'stroke-width': 4 });
+      const caps = [top, bot].map(y => L(s2, px - 10, y, px + 10, y, { stroke: 'var(--accent)', opacity: 0 }));
+      s2.appendChild(S('circle', { cx: px, cy: y2, r: 6, fill: 'var(--accent)' }));
+      X(s2, px, top - 12, '+0.12 (N=3)', 'motif-text m-ink', 'middle');
+      const ring = S('circle', { cx: px, cy: 0, r: 8, fill: 'none', stroke: 'var(--m-bad)', 'stroke-width': 2 });
+      s2.appendChild(ring);
+      const note = S('g', { opacity: 0 }); g.appendChild(note);
+      X(note, -46, 122, '95% CI [-0.58, +0.83]', 'motif-text m-b m-bad');
+      X(note, -46, 142, 'Crosses zero: ranking retracted', 'motif-label m-bad');
+      ring.style.opacity = 0;
+      c.appendChild(svg);
+      let raf;
+      const grow = () => {
+        const t0 = performance.now();
+        const f = (t) => {
+          const k = Math.min(1, (t - t0) / 600), e = 1 - Math.pow(1 - k, 3);
+          bar.setAttribute('y1', y2 + (top - y2) * e); bar.setAttribute('y2', y2 + (bot - y2) * e);
+          if (k < 1) raf = requestAnimationFrame(f);
+        };
+        raf = requestAnimationFrame(f);
+      };
+      const fin = () => {
+        bar.setAttribute('y1', top); bar.setAttribute('y2', bot);
+        caps.forEach(e => { e.style.opacity = 1; }); note.style.opacity = 1; ring.style.opacity = 1;
+      };
+      return {
+        play() {
+          if (prefersReduced) { arrow.style.opacity = 1; s2.style.opacity = 1; fin(); return; }
+          cx.t(() => {
+            arrow.style.transition = 'opacity .4s'; arrow.style.opacity = 1;
+            cx.t(() => {
+              s2.style.transition = 'opacity .3s'; s2.style.opacity = 1;
+              cx.t(() => {
+                grow();
+                caps.forEach(e => { e.style.transition = 'opacity .2s .6s'; e.style.opacity = 1; });
+                cx.t(() => {
+                  note.style.transition = ring.style.transition = 'opacity .4s';
+                  note.style.opacity = 1; ring.style.opacity = 1; ring.setAttribute('r', 12);
+                }, 700);
+              }, 300);
+            }, 400);
+          }, 500);
+        },
+        reset() {
+          cancelAnimationFrame(raf);
+          arrow.style.opacity = 0; s2.style.opacity = 0; note.style.opacity = 0; ring.style.opacity = 0; ring.setAttribute('r', 8);
+          bar.setAttribute('y1', y2); bar.setAttribute('y2', y2); caps.forEach(e => { e.style.opacity = 0; });
+        }
+      };
+    },
+
+    // Compact 2-axis plot; labels sit beside their points; caption below. ~2.1s.
+    'willingness-skill': (c, cx) => {
+      const svg = svgN(312), g = S('g', { transform: 'translate(48,214)' });
+      svg.appendChild(g);
+      L(g, 0, 0, 272, 0, { class: 'motif-rule' }); L(g, 0, 0, 0, -180, { class: 'motif-rule' });
+      g.appendChild(S('path', { d: 'M262-5L272 0 262 5', fill: 'var(--rule)' }));
+      g.appendChild(S('path', { d: 'M-5-170L0-180 5-170', fill: 'var(--rule)' }));
+      X(g, -38, -196, 'Willingness (tasks answered, 0–14)', 'motif-label m-b');
+      X(g, 125, 38, 'Skill (capability on shared tasks, 0–10)', 'motif-label m-b', 'middle');
+      [0, 5, 10].forEach(v => { const x = v * 25; L(g, x, 0, x, 5, { class: 'motif-rule' }); X(g, x, 20, '' + v, 'motif-label', 'middle'); });
+      [0, 7, 14].forEach(v => { const y = -v * 170 / 14; L(g, -5, y, 0, y, { class: 'motif-rule' }); X(g, -10, y + 4, '' + v, 'motif-label', 'end'); });
+      const x1 = 6.62 * 25, x2 = 6.74 * 25, y1 = -8 * 170 / 14, y2 = -170;
+      const p1 = S('g'), p2 = S('g'), br = S('g');
+      p1.appendChild(S('circle', { cx: x1, cy: y1, r: 8, fill: 'var(--surface)', stroke: 'var(--muted)', 'stroke-width': 3 }));
+      X(p1, x1 - 14, y1 + 2, 'Clean Base', 'motif-text m-mut', 'end');
+      X(p1, x1 - 14, y1 + 19, 'Answered: 8, Skill: 6.62', 'motif-label m-mut', 'end');
+      p2.appendChild(S('circle', { cx: x2, cy: y2, r: 8, fill: 'var(--accent)' }));
+      X(p2, x2 - 14, y2 + 5, 'Uncensored 120B', 'motif-text m-b m-acc', 'end');
+      X(p2, x2 - 14, y2 + 22, 'Answered: 14, Skill: 6.74', 'motif-label m-acc', 'end');
+      L(br, x1, y1, x1, y2, { stroke: 'var(--rule)', 'stroke-dasharray': '4 4' });
+      X(br, x1 + 14, (y1 + y2) / 2 - 2, '+6 tasks', 'motif-text m-acc');
+      X(br, x1 + 14, (y1 + y2) / 2 + 15, '(Willingness gap)', 'motif-label m-mut');
+      [g.appendChild(br), g.appendChild(p1), g.appendChild(p2)];
+      const cap = S('g'); svg.appendChild(cap);
+      X(cap, 170, 282, 'Skill gap is negligible', 'motif-text m-ink', 'middle');
+      X(cap, 170, 301, '(Δ +0.12 is within noise)', 'motif-label m-mut', 'middle');
+      c.appendChild(svg);
+      return fader(cx, [[200, 0.4, [p1]], [800, 0.4, [p2]], [1600, 0.5, [br, cap]]]);
+    },
+
+    // Ten condensed rows: container, progress, truncated flag, verdict. ~5s.
+    'exploit-lab': (c, cx) => {
+      const svg = svgN(316), TL = 124;
+      X(svg, 14, 20, '10 Isolated Containers (Parallel Trials)', 'motif-label m-b');
+      X(svg, 170, 38, 'Target / Verdict', 'motif-label m-b');
+      const rows = [];
+      for (let i = 0; i < 10; i++) {
+        const y = 48 + i * 26;
+        const box = R(svg, 14, y, 16, 16, { fill: 'var(--surface)', stroke: 'var(--accent)', rx: 3, 'stroke-width': 1.5 });
+        L(svg, 36, y + 8, 36 + TL, y + 8, { stroke: 'var(--rule)', 'stroke-dasharray': '2 2' });
+        const bar = R(svg, 36, y + 6, 0, 4, { fill: 'var(--accent)', rx: 2 });
+        const flag = S('text', { x: 170, y: y + 13, class: 'motif-text m-mono', opacity: 0 }, ['FLAG{' + Math.random().toString(36).substring(2, 6) + '…}']);
+        const ok = S('text', { x: 326, y: y + 13, class: 'motif-text m-b m-good', 'text-anchor': 'end', opacity: 0 }, ['✓ PASS']);
+        svg.appendChild(flag); svg.appendChild(ok);
+        rows.push({ box, bar, flag, ok });
       }
+      c.appendChild(svg);
+      let running = false, fr = [];
+      const fin = (r) => { r.bar.setAttribute('width', TL); r.box.classList.add('m-done'); r.flag.style.opacity = 1; r.ok.style.opacity = 1; };
+      return {
+        play() {
+          if (prefersReduced) { rows.forEach(fin); return; }
+          if (running) return;
+          running = true;
+          rows.forEach((r, i) => {
+            let w = 0;
+            const sp = (1.5 + Math.random() * 2) * TL / 385;
+            cx.t(() => {
+              const loop = () => {
+                if (!running) return;
+                w += sp;
+                if (w >= TL) {
+                  r.flag.style.transition = 'opacity .2s'; r.ok.style.transition = 'opacity .2s .2s';
+                  fin(r);
+                } else fr[i] = requestAnimationFrame(loop);
+                r.bar.setAttribute('width', Math.min(w, TL));
+              };
+              fr[i] = requestAnimationFrame(loop);
+            }, Math.random() * 1000);
+          });
+        },
+        reset() {
+          running = false; fr.forEach(cancelAnimationFrame);
+          rows.forEach(r => { r.bar.setAttribute('width', 0); r.flag.style.opacity = 0; r.ok.style.opacity = 0; r.box.classList.remove('m-done'); });
+        }
+      };
+    },
+
+    // Claim -> buggy verifier -> corrected verifier -> contrast, stacked. ~2.9s.
+    verifier: (c, cx) => {
+      const svg = svgN(396);
+      svg.appendChild(S('defs', {}, [marker('arr-red', '#d32f2f'), marker('arr-green', '#388e3c')]));
+      const claim = S('g'); svg.appendChild(claim);
+      R(claim, 20, 10, 300, 72, { fill: 'var(--code-bg)', stroke: 'var(--rule)' });
+      X(claim, 34, 32, 'Model Answer:', 'motif-label m-b');
+      X(claim, 34, 54, '1. Exploit uses CVE-2024-9999', 'motif-text m-mono');
+      X(claim, 34, 72, '2. Run mssqlclient.py', 'motif-text m-mono');
+      const a1 = L(svg, 60, 84, 60, 108, { stroke: '#d32f2f', 'marker-end': 'url(#arr-red)' });
+      const a2 = L(svg, 60, 174, 60, 198, { stroke: '#388e3c', 'marker-end': 'url(#arr-green)' });
+      const card = (y, h, fill, stroke, tcls, title, rows) => {
+        const g = S('g');
+        R(g, 20, y, 300, h, { fill, stroke });
+        X(g, 34, y + 20, title, 'motif-label m-b ' + tcls);
+        rows.forEach(([l, v, cls], i) => {
+          X(g, 34, y + 44 + i * 20, l, 'motif-text motif-on-light');
+          X(g, 306, y + 44 + i * 20, v, 'motif-text m-b ' + cls, 'end');
+        });
+        svg.appendChild(g);
+        return g;
+      };
+      const v1 = card(110, 62, '#fff0f0', '#ffcccb', 'm-title-bad', 'Buggy Verifier (Before)', [['NVD totalResults: 0', '→ SUPPORTED ✓', 'motif-verdict-bad']]);
+      const v2 = card(200, 82, '#f0fff0', '#c8e6c9', 'm-title-good', 'Corrected Verifier', [['NVD totalResults: 0', '→ NOT_IN_DB ✗', 'motif-verdict-good'], ['mssqlclient.py', '→ SUPPORTED ✓', 'motif-verdict-good']]);
+      const res = S('g'); svg.appendChild(res);
+      X(res, 20, 308, 'Fabrications Accepted', 'motif-label m-b');
+      R(res, 20, 316, 300, 66, { fill: 'var(--surface)', stroke: 'var(--rule)', 'stroke-width': 1 });
+      X(res, 34, 344, '10/10', 'motif-text m-b m-bad'); X(res, 100, 344, 'fake impacket scripts', 'motif-text m-mut');
+      L(res, 34, 354, 306, 354, { stroke: 'var(--rule)', 'stroke-width': 1, 'stroke-dasharray': '2 2' });
+      X(res, 34, 372, '0/10', 'motif-text m-b m-good'); X(res, 100, 372, 'fake CVE ids', 'motif-text m-mut');
+      c.appendChild(svg);
+      return fader(cx, [[400, 0.4, [a1, v1]], [1400, 0.4, [a2, v2]], [2400, 0.5, [res]]]);
+    }
+  };
+
+  // ==========================================================================
+  // Mounting. One <svg> per slot, always. Rebuilt when the breakpoint flips.
+  // ==========================================================================
+  const mq = window.matchMedia('(max-width: 760px)');
+  let mode = mq.matches;
+  const slots = [];
+
+  function stop(s) {
+    if (!s.inst) return;
+    try { s.inst.reset(); } catch (e) {}
+    s.cx.clear();
+  }
+
+  function mount(s) {
+    stop(s);
+    const cx = { ids: [], t(fn, ms) { this.ids.push(setTimeout(fn, ms)); }, clear() { this.ids.forEach(clearTimeout); this.ids = []; } };
+    const tmp = document.createElement('div');
+    let inst;
+    try { inst = (mode ? narrow : motifs)[s.name](tmp, cx); } catch (e) { cx.clear(); return; }
+    s.el.replaceChildren(tmp.firstChild);   // swap atomically: never empty, never two
+    s.inst = inst; s.cx = cx;
+    if (prefersReduced || s.vis) inst.play();
+  }
+
+  document.querySelectorAll('.motif-slot').forEach(el => {
+    const name = el.getAttribute('data-motif');
+    if (motifs[name] && narrow[name]) slots.push({ el, name, vis: false });
+  });
+  slots.forEach(mount);
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      const s = slots.find(x => x.el === en.target);
+      if (!s) return;
+      s.vis = en.isIntersecting;
+      if (prefersReduced) return;           // reduced motion: final frame stays put
+      if (s.vis) s.inst.play(); else stop(s);
     });
   }, { threshold: 0.1 });
+  slots.forEach(s => io.observe(s.el));
 
-  instances.forEach(i => observer.observe(i.el));
+  function recheck() {
+    if (mq.matches === mode) return;
+    mode = mq.matches;
+    slots.forEach(mount);
+  }
+  mq.addEventListener('change', recheck);
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(recheck, 150); });
+  rm.addEventListener('change', () => { prefersReduced = rm.matches; slots.forEach(mount); });
 
-  window.__DSH_MOTIFS_PLAY = () => instances.forEach(i => i.inst.play());
+  window.__DSH_MOTIFS_PLAY = () => slots.forEach(s => s.inst && s.inst.play());
 
 })();

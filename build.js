@@ -81,11 +81,9 @@ html = html.replace(/<(h[23]) id="([^"]+)">([\s\S]*?)<\/\1>/g, (match, _tag, id)
   mounted.add(id);
   return (
     match +
-    '\n<figure class="motif-figure"><div class="motif-scroll">' +
-    '<div class="motif-slot" data-motif="' +
+    '\n<figure class="motif-figure"><div class="motif-slot" data-motif="' +
     motif +
-    '"></div></div>' +
-    '<figcaption class="motif-hint">Scroll to explore</figcaption></figure>'
+    '"></div></figure>'
   );
 });
 

@@ -39,25 +39,6 @@
   margin: 0;
 }
 
-.motif-hint {
-  margin: 0.45rem 0 0;
-  font-family: var(--sans, sans-serif);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--muted, #5b564c);
-}
-
-.motif-hint::before {
-  content: "\2192\00a0\00a0";
-}
-
-/* Desktop: everything fits, so the hint is noise. */
-@media (min-width: 761px) {
-  .motif-hint { display: none; }
-}
-
 /* 4. The theme gives the sticky mobile tab strip a 96%-opaque background,
    which is translucent enough that the article ghosts through it while
    scrolling. Make it solid. */
@@ -69,27 +50,32 @@
   }
 }
 
-/* 3. Narrow screens: keep the diagram at a readable size and let it scroll
-   horizontally instead of shrinking the type into illegibility. */
-@media (max-width: 760px) {
-  .motif-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--rule-strong, #cfc7b5) transparent;
-  }
+/* 3. Narrow-screen figure styling. The figures are rebuilt as a reflowed
+   340-unit layout by motion.js, so nothing scrolls. Per-element colours are
+   classes because `.motif-text`/`.motif-label` set `fill` and would beat an
+   SVG fill attribute. */
+.motif-slot {
+  --m-bad: #a13a14;
+  --m-good: #2e7d32;
+}
+@media (prefers-color-scheme: dark) {
+  .motif-slot { --m-bad: #f09a70; --m-good: #7fd08a; }
+}
+.motif-slot .m-b { font-weight: 700; }
+.motif-slot .m-mut { fill: var(--muted, #5b564c); }
+.motif-slot .m-acc { fill: var(--accent); }
+.motif-slot .m-ink { fill: var(--ink); }
+.motif-slot .m-bad { fill: var(--m-bad); }
+.motif-slot .m-good { fill: var(--m-good); }
+.motif-slot .m-title-bad { fill: #b3261e; }
+.motif-slot .m-title-good { fill: #2e7d32; }
+.motif-slot .m-done { fill: var(--link-soft, #e8eff7); transition: fill .2s; }
+.motif-slot .motif-narrow .motif-verdict-bad,
+.motif-slot .motif-narrow .motif-verdict-good { font-size: 14px; }
 
-  .motif-scroll .motif-slot {
-    width: 640px;
-    max-width: none;
-    height: auto;
-    aspect-ratio: auto;
-  }
-
-  .motif-scroll .motif-slot svg {
-    width: 640px;
-    height: auto;
-  }
+/* 5. Footer: when the three items wrap on a phone, the "·" separators end up
+   stranded at the start of lines. Stack them and drop the dots. */
+@media (max-width: 640px) {
+  .site-footer { flex-direction: column; }
+  .site-footer span + span::before { content: none; }
 }
