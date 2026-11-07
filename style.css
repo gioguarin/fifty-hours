@@ -1,0 +1,288 @@
+:root {
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --ink: #1c1c1e;
+  --muted: #5f6368;
+  --rule: #e2ddd6;
+  --accent: #1a4f8a;
+  --accent-soft: #eaf1f9;
+  --code-bg: #f3f1ed;
+  --serif: Charter, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.layout {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+/* ---------- sidebar ---------- */
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 52px 0 32px;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.sidebar ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--rule);
+}
+
+.sidebar li { margin: 0; }
+
+.sidebar a {
+  display: block;
+  padding: 6px 0 6px 14px;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  border-bottom: 0;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.sidebar a:hover {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+/* ---------- content ---------- */
+
+.content {
+  min-width: 0;
+  padding-top: 52px;
+  max-width: 720px;
+}
+
+h1 {
+  font-family: var(--sans);
+  font-size: 2.35rem;
+  line-height: 1.14;
+  letter-spacing: -0.021em;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+h2 {
+  font-family: var(--sans);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+  font-weight: 650;
+  margin: 3.2rem 0 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+  scroll-margin-top: 24px;
+}
+
+h3 {
+  font-family: var(--sans);
+  font-size: 1.08rem;
+  line-height: 1.35;
+  font-weight: 650;
+  margin: 2.1rem 0 0.6rem;
+  color: #2b2b30;
+  scroll-margin-top: 24px;
+}
+
+p { margin: 0 0 1.15em; }
+
+/* opening standfirst */
+.content > p:first-of-type em {
+  font-size: 1.06rem;
+  color: var(--muted);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(26, 79, 138, 0.28);
+}
+
+a:hover { border-bottom-color: var(--accent); }
+
+strong { font-weight: 650; }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.6rem 0;
+}
+
+/* The document uses "---" before most h2s, and h2 already draws a rule.
+   Keeping both produced a doubled line. */
+.content > hr { display: none; }
+
+.content > hr + h2 { margin-top: 2.4rem; }
+
+ul, ol { margin: 0 0 1.15em; padding-left: 1.35em; }
+li { margin: 0.32em 0; }
+
+/* documented contents list */
+.content > ol:first-of-type {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 18px 22px 18px 40px;
+  font-family: var(--sans);
+  font-size: 0.93rem;
+  line-height: 1.75;
+}
+
+/* ---------- code ---------- */
+
+code {
+  font-family: var(--mono);
+  font-size: 0.845em;
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 0.14em 0.36em;
+  overflow-wrap: break-word;
+}
+
+pre {
+  background: #1f2126;
+  color: #e6e6e8;
+  border-radius: 10px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  margin: 0 0 1.3em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 0 1.5em;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 0.865rem;
+  line-height: 1.5;
+}
+
+thead th {
+  text-align: left;
+  font-weight: 650;
+  background: #f7f5f1;
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 9px 14px;
+  border-bottom: 1px solid #efece7;
+  vertical-align: top;
+}
+
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #faf8f4; }
+
+td code, th code { font-size: 0.9em; }
+
+/* ---------- footer ---------- */
+
+.site-footer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 64px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.site-footer a { color: var(--muted); border-bottom-color: var(--rule); }
+.site-footer a:hover { color: var(--accent); }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 980px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 20px 72px; }
+  .sidebar {
+    position: static;
+    max-height: none;
+    padding: 32px 0 0;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 20px;
+  }
+  .sidebar ol { border-left: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+  .sidebar a { padding: 4px 10px; border-left: 0; border-radius: 6px; background: var(--accent-soft); }
+  .content { padding-top: 32px; max-width: none; }
+  body { font-size: 17px; }
+  h1 { font-size: 1.95rem; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 16.5px; }
+  h1 { font-size: 1.7rem; }
+  h2 { font-size: 1.3rem; }
+  .content > ol:first-of-type { padding-left: 34px; }
+}
+
+@media print {
+  .sidebar, .site-footer { display: none; }
+  .layout { display: block; padding: 0; max-width: none; }
+  .content { max-width: none; padding-top: 0; }
+  body { font-size: 11pt; background: #fff; }
+  pre { background: #f4f4f4; color: #111; border: 1px solid #ddd; }
+  h2 { page-break-after: avoid; }
+  .table-wrap { border: 1px solid #ccc; }
+}
