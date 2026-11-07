@@ -22,7 +22,9 @@ try {
 }
 
 const HERE = __dirname;
-const SRC = path.resolve(HERE, "../../writeup/WRITEUP.md");
+// The published edition, cut to ~15 minutes. The full-length draft lives
+// beside it as writeup/WRITEUP.md.
+const SRC = path.resolve(HERE, "../../writeup/WRITEUP-CONCISE.md");
 
 if (!fs.existsSync(SRC)) {
   console.error("Source not found: " + SRC);
@@ -189,7 +191,7 @@ ${html}
   </main>
 </div>
 <footer class="site-footer">
-  <span>Written Nov 4&ndash;6, 2026 &middot; ${words.toLocaleString()} words</span>
+  <span>Written Nov 4&ndash;7, 2026 &middot; ${words.toLocaleString()} words</span>
   <span>Supporting artifacts live in a private repository</span>
   <span>Published with GitHub Pages</span>
 </footer>
