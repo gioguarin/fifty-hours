@@ -132,15 +132,18 @@ body {
 }
 .skip-link:focus { top: var(--s3); }
 
-/* Reading progress — CSS only, Chromium/Safari 26+. No-op elsewhere. */
+/* Reading progress — CSS only, Chromium/Safari 26+. No-op elsewhere.
+   Kept deliberately quiet: a 2px hairline in the navigation ink, not the
+   red-pen accent (which is reserved for corrections). */
 @supports (animation-timeline: scroll()) {
   body::before {
     content: "";
     position: fixed;
     inset: 0 0 auto 0;
-    height: 3px;
+    height: 2px;
     z-index: 60;
-    background: var(--accent);
+    background: var(--link);
+    opacity: 0.8;
     transform: scaleX(0);
     transform-origin: 0 50%;
     animation: reading-progress linear both;
@@ -148,6 +151,22 @@ body {
     pointer-events: none;
   }
   @keyframes reading-progress { to { transform: scaleX(1); } }
+
+  /* Let body text dissolve into the paper at the top edge instead of being
+     guillotined flush against the progress hairline. Desktop only: on narrow
+     screens the sticky tab strip already provides that edge, and a fade over
+     it would dim the tab labels. */
+  @media (min-width: 981px) {
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 12px;
+      z-index: 55;
+      background: linear-gradient(to bottom, var(--bg), transparent);
+      pointer-events: none;
+    }
+  }
 }
 
 /* ---------- 3. Page layout ---------- */
@@ -799,7 +818,7 @@ td code, th code {
     --pre-bg: #f4f4f4; --pre-ink: #111; --pre-rule: #bbb; --pre-label: #555;
   }
   body { font-size: 10.5pt; line-height: 1.5; background: #fff; }
-  body::before, .sidebar, .site-footer, .skip-link { display: none !important; }
+  body::before, body::after, .sidebar, .site-footer, .skip-link { display: none !important; }
   .layout { display: block; max-width: none; padding: 0; }
   .content { max-width: none; padding-top: 0; }
   h1 { font-size: 24pt; }
