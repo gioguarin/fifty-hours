@@ -176,7 +176,11 @@ const page = `<!doctype html>
 <div class="layout">
   <nav class="sidebar" aria-label="On this page">
     <p class="sidebar-label">On this page</p>
-    <ol>
+    <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list">
+      <span class="toc-toggle-title">Contents</span>
+      <span class="toc-toggle-meta">${sections.length} sections</span>
+    </button>
+    <ol id="toc-list">
 ${nav}
     </ol>
   </nav>
@@ -210,6 +214,30 @@ ${html}
   }, { rootMargin: "0px 0px -75% 0px" });
   document.querySelectorAll("main h2[id]").forEach(function (h) {
     if (map[h.id]) io.observe(h);
+  });
+})();
+
+/* Mobile contents drawer. Collapsed by default on narrow screens. */
+(function () {
+  var nav = document.querySelector(".sidebar");
+  var btn = document.querySelector(".toc-toggle");
+  if (!nav || !btn) return;
+  function set(open) {
+    if (open) nav.setAttribute("data-toc-open", "true");
+    else nav.removeAttribute("data-toc-open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  btn.addEventListener("click", function () {
+    set(btn.getAttribute("aria-expanded") !== "true");
+  });
+  nav.addEventListener("click", function (e) {
+    if (e.target.closest && e.target.closest("a")) set(false);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") set(false);
+  });
+  document.addEventListener("click", function (e) {
+    if (!nav.contains(e.target)) set(false);
   });
 })();
 </script>

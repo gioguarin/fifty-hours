@@ -224,6 +224,9 @@ body {
   color: var(--muted);
 }
 
+/* Only exists as the mobile contents drawer; the desktop rail is always open. */
+.toc-toggle { display: none; }
+
 .sidebar ol {
   list-style: none;
   margin: 0;
@@ -751,35 +754,79 @@ td code, th code {
   }
   .sidebar-label { display: none; }
 
-  /* a single scrolling row of section tabs instead of 12 wrapped chips */
-  .sidebar ol {
+  /* A collapsed contents drawer. The tab row that used to live here was
+     2277px wide inside a 360px viewport, so it had to be swiped sideways. */
+  .toc-toggle {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 0;
-    padding: 0 var(--s4);
-    border-left: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
-            mask-image: linear-gradient(to right, transparent, #000 1rem, #000 calc(100% - 2rem), transparent);
-    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    gap: var(--s2);
+    width: 100%;
+    margin: 0;
+    padding: 0.8rem var(--s4);
+    background: none;
+    border: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--t-sm);
+    text-align: left;
+    cursor: pointer;
   }
-  .sidebar ol::-webkit-scrollbar { display: none; }
-  .sidebar li { flex: none; }
+  .toc-toggle-title { font-weight: 650; }
+  .toc-toggle-meta {
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .toc-toggle::after {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    margin-left: auto;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: rotate(45deg) translate(-1px, -1px);
+    transition: transform 0.18s ease;
+  }
+  .sidebar[data-toc-open="true"] .toc-toggle::after {
+    transform: rotate(-135deg) translate(-2px, -2px);
+  }
+
+  .sidebar ol {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin: 0;
+    padding: var(--s2) var(--s4) var(--s3);
+    border-left: 0;
+    border-bottom: 1px solid var(--rule-strong);
+    background: var(--bg);
+    box-shadow: 0 14px 26px -20px var(--shadow-edge);
+    max-height: min(62vh, 24rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .sidebar[data-toc-open="true"] ol { display: block; }
+
+  .sidebar li { margin: 0; }
   .sidebar a {
     display: block;
     margin: 0;
-    padding: 0.8rem 0.8rem 0.7rem;
+    padding: 0.6rem 0.25rem;
     border-left: 0;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
+    border-bottom: 1px solid var(--rule);
+    white-space: normal;
     background: none;
   }
-  .sidebar a::before { margin-right: 0.45em; }
-  .sidebar a:hover { border-left-color: transparent; border-bottom-color: var(--rule-strong); }
-  .sidebar a[aria-current="true"] { border-bottom-color: var(--accent); background: none; }
-  @supports selector(:target-current) {
-    .sidebar a:target-current { border-bottom-color: var(--accent); background: none; }
+  .sidebar li:last-child a { border-bottom: 0; }
+  .sidebar a::before { margin-right: 0.5em; }
+  .sidebar a:hover { border-left-color: transparent; }
+  .sidebar a[aria-current="true"],
+  .sidebar a:target-current {
+    border-bottom-color: var(--rule);
+    background: linear-gradient(90deg, var(--accent-bg), transparent 85%);
   }
 
   .content { max-width: none; padding-top: var(--s6); }
